@@ -9,7 +9,8 @@ function ListaTarefas() {
     if (novaTarefa.trim() !== '') {
       const nova = {
         texto: novaTarefa,
-        data: new Date()
+        data: new Date(),
+        concluida: false
       };
 
       setTarefas([...tarefas, nova]);
@@ -19,6 +20,17 @@ function ListaTarefas() {
 
   const removerTarefa = (indice) => {
     setTarefas(tarefas.filter((_, i) => i !== indice));
+  };
+
+  const toggleConcluida = (indice) => {
+    const novasTarefas = tarefas.map((tarefa, i) => {
+      if (i === indice) {
+        return { ...tarefa, concluida: !tarefa.concluida };
+      }
+      return tarefa;
+    });
+
+    setTarefas(novasTarefas);
   };
 
   const tarefasOrdenadas = [...tarefas].sort((a, b) => {
@@ -53,8 +65,22 @@ function ListaTarefas() {
       <ul>
         {tarefasOrdenadas.map((tarefa, indice) => (
           <li key={indice}>
-            {tarefa.texto} 
-            <button onClick={() => removerTarefa(indice)}>Remover</button>
+            
+            <span
+              style={{
+                textDecoration: tarefa.concluida ? 'line-through' : 'none'
+              }}
+            >
+              {tarefa.texto}
+            </span>
+
+            <button onClick={() => toggleConcluida(indice)}>
+              {tarefa.concluida ? 'Desmarcar' : 'Concluir'}
+            </button>
+
+            <button onClick={() => removerTarefa(indice)}>
+              Remover
+            </button>
           </li>
         ))}
       </ul>
