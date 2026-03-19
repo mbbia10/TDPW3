@@ -4,7 +4,7 @@ import './ListaTarefas.css';
 function ListaTarefas() {
   const [tarefas, setTarefas] = useState([]);
   const [novaTarefa, setNovaTarefa] = useState('');
-  const [descricao, setDescricao] = useState(''); // NOVO ESTADO
+  const [descricao, setDescricao] = useState('');
   const [ordem, setOrdem] = useState('data');
 
   useEffect(() => {
@@ -18,18 +18,24 @@ function ListaTarefas() {
 
   const adicionarTarefa = () => {
     if (novaTarefa.trim() === '') return;
-
     const nova = {
       id: Date.now(),
       texto: novaTarefa,
-      descricao: descricao, // SALVANDO A DESCRIÇÃO
+      descricao: descricao,
       data: Date.now(),
       concluida: false
     };
-
     setTarefas([...tarefas, nova]);
     setNovaTarefa('');
-    setDescricao(''); // LIMPA O CAMPO
+    setDescricao('');
+  };
+
+  const toggleConcluida = (id) => {
+    setTarefas(tarefas.map(t => t.id === id ? { ...t, concluida: !t.concluida } : t));
+  };
+
+  const removerTarefa = (id) => {
+    setTarefas(tarefas.filter(t => t.id !== id));
   };
 
   const tarefasOrdenadas = useMemo(() => {
@@ -41,42 +47,46 @@ function ListaTarefas() {
   }, [tarefas, ordem]);
 
   return (
-    <div className="page-wrapper"> {/* WRAPPER PARA CENTRALIZAR TUDO */}
+    <div className="page-wrapper">
       <div className="container">
         <h2>Task Master Pro</h2>
 
-        <div className="input-group">
+        <div className="input-section">
           <input
             type="text"
+            className="input-main"
             value={novaTarefa}
             onChange={(e) => setNovaTarefa(e.target.value)}
             placeholder="Título da tarefa..."
           />
           <input
             type="text"
-            className="input-desc"
+            className="input-sub"
             value={descricao}
             onChange={(e) => setDescricao(e.target.value)}
-            placeholder="Breve descrição (opcional)"
+            placeholder="Adicionar descrição..."
           />
-          <button onClick={adicionarTarefa}>Adicionar</button>
+          <button className="btn-add" onClick={adicionarTarefa}>Adicionar Tarefa</button>
         </div>
 
         <div className="filtros">
-          <button className={ordem === 'data' ? 'active' : ''} onClick={() => setOrdem('data')}>Recentes</button>
-          <button className={ordem === 'alfabetica' ? 'active' : ''} onClick={() => setOrdem('alfabetica')}>A-Z</button>
+          <button className={ordem === 'data' ? 'active' : ''} onClick={() => setOrdem('data')}>🕒 Recentes</button>
+          <button className={ordem === 'alfabetica' ? 'active' : ''} onClick={() => setOrdem('alfabetica')}>🔤 A-Z</button>
         </div>
 
-        <ul>
+        <ul className="lista-tarefas">
           {tarefasOrdenadas.map((tarefa) => (
-            <li key={tarefa.id} className="tarefa-item">
-              <div className="info-tarefa">
-                <strong className={tarefa.concluida ? 'concluida' : ''}>{tarefa.texto}</strong>
-                {tarefa.descricao && <p className="desc-text">{tarefa.descricao}</p>}
+            <li key={tarefa.id} className={`tarefa-item ${tarefa.concluida ? 'item-concluido' : ''}`}>
+              <div className="info-tarefa" onClick={() => toggleConcluida(tarefa.id)}>
+                <div className="checkbox">
+                  {tarefa.concluida ? '✓' : ''}
+                </div>
+                <div className="texto-wrapper">
+                  <strong className="titulo-tarefa">{tarefa.texto}</strong>
+                  {tarefa.descricao && <p className="desc-tarefa">{tarefa.descricao}</p>}
+                </div>
               </div>
-              <div className="acoes">
-                <button onClick={() => setTarefas(tarefas.filter(t => t.id !== tarefa.id))}>✕</button>
-              </div>
+              <button className="btn-delete" onClick={() => removerTarefa(tarefa.id)}>✕</button>
             </li>
           ))}
         </ul>
