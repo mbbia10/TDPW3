@@ -49,7 +49,12 @@ function ListaTarefas() {
     if (ordem === 'alfabetica') {
       return a.texto.localeCompare(b.texto);
     }
-    return b.data - a.data; // 🔥 agora funciona
+  
+    if (ordem === 'data') {
+      return b.data - a.data;
+    }
+  
+    return 0;
   });
 
   return (
