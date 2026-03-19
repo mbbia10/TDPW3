@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-
+import './ListaTarefas.css';
 function ListaTarefas() {
   const [tarefas, setTarefas] = useState([]);
   const [novaTarefa, setNovaTarefa] = useState('');
@@ -55,23 +55,25 @@ function ListaTarefas() {
   });
 
   return (
-    <div>
+    <div className="container">
       <h2>Lista de Tarefas</h2>
-
-      <input
-        type="text"
-        value={novaTarefa}
-        onChange={(e) => setNovaTarefa(e.target.value)}
-        placeholder="Digite uma nova tarefa"
-      />
-      <button onClick={adicionarTarefa}>Adicionar</button>
-
+  
+      <div>
+        <input
+          type="text"
+          value={novaTarefa}
+          onChange={(e) => setNovaTarefa(e.target.value)}
+          placeholder="Digite uma nova tarefa"
+        />
+        <button onClick={adicionarTarefa}>Adicionar</button>
+      </div>
+  
       <div>
         <button onClick={() => setOrdem('data')}>
-          Ordenar por Data
+          Data
         </button>
         <button onClick={() => setOrdem('alfabetica')}>
-          Ordenar A-Z
+          A-Z
         </button>
       </div>
       
@@ -79,21 +81,19 @@ function ListaTarefas() {
         {tarefasOrdenadas.map((tarefa, indice) => (
           <li key={indice}>
             
-            <span
-              style={{
-                textDecoration: tarefa.concluida ? 'line-through' : 'none'
-              }}
-            >
+            <span className={tarefa.concluida ? 'concluida' : ''}>
               {tarefa.texto}
             </span>
-
-            <button onClick={() => toggleConcluida(indice)}>
-              {tarefa.concluida ? 'Desmarcar' : 'Concluir'}
-            </button>
-
-            <button onClick={() => removerTarefa(indice)}>
-              Remover
-            </button>
+  
+            <div>
+              <button onClick={() => toggleConcluida(indice)}>
+                ✓
+              </button>
+  
+              <button onClick={() => removerTarefa(indice)}>
+                ✕
+              </button>
+            </div>
           </li>
         ))}
       </ul>
