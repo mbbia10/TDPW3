@@ -1,9 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function ListaTarefas() {
   const [tarefas, setTarefas] = useState([]);
   const [novaTarefa, setNovaTarefa] = useState('');
   const [ordem, setOrdem] = useState('data');
+
+  // 🔹 CARREGAR tarefas ao iniciar
+  useEffect(() => {
+    const tarefasSalvas = localStorage.getItem('tarefas');
+    if (tarefasSalvas) {
+      setTarefas(JSON.parse(tarefasSalvas));
+    }
+  }, []);
+
+  // 🔹 SALVAR sempre que mudar
+  useEffect(() => {
+    localStorage.setItem('tarefas', JSON.stringify(tarefas));
+  }, [tarefas]);
 
   const adicionarTarefa = () => {
     if (novaTarefa.trim() !== '') {
